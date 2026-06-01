@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 theme for Compose -->
+    <style name="Theme.VoiceSnooze" parent="android:Theme.Material.Light">
+        <!-- Compose will use Material3 components automatically; this is just a fallback for non-Compose code -->
+    </style>
+</resources>

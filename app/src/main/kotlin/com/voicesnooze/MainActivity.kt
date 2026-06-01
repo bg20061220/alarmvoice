@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +60,8 @@ class MainActivity : ComponentActivity() {
  */
 @Composable
 fun AlarmVoiceApp() {
+    val context = LocalContext.current
+
     // Time state: separate hour and minute fields
     val hourState = remember { mutableStateOf("7") }
     val minuteState = remember { mutableStateOf("30") }
@@ -133,7 +136,7 @@ fun AlarmVoiceApp() {
                     // Check permission before scheduling (Android 12+ requires SCHEDULE_EXACT_ALARM)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         if (ContextCompat.checkSelfPermission(
-                                MainActivity::class.java as android.content.Context?,
+                                context,
                                 Manifest.permission.SCHEDULE_EXACT_ALARM
                             ) != PackageManager.PERMISSION_GRANTED
                         ) {
@@ -144,11 +147,7 @@ fun AlarmVoiceApp() {
                     }
 
                     // Permission granted (or Android < 12); schedule the alarm
-                    AlarmScheduler.scheduleAlarm(
-                        MainActivity::class.java as android.content.Context? ?: return@Button,
-                        validHour,
-                        validMinute
-                    )
+                    AlarmScheduler.scheduleAlarm(context, validHour, validMinute)
                     alarmStatusState.value = "Alarm set for $validHour:${String.format("%02d", validMinute)}"
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -161,7 +160,7 @@ fun AlarmVoiceApp() {
             // Cancel Alarm Button
             Button(
                 onClick = {
-                    AlarmScheduler.cancelAlarm(MainActivity::class.java as android.content.Context? ?: return@onClick)
+                    AlarmScheduler.cancelAlarm(context)
                     alarmStatusState.value = "Alarm cancelled"
                 },
                 modifier = Modifier.fillMaxWidth()

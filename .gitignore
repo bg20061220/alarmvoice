@@ -1,0 +1,26 @@
+# Android/Gradle
+.gradle/
+.idea/
+*.iml
+*.iws
+*.ipr
+local.properties
+build/
+.DS_Store
+
+# Kotlin
+*.class
+*.kotlin_module
+*.jar
+
+# IDE
+.vscode/
+.sublime-project
+.sublime-workspace
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
