@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -58,6 +59,7 @@ class MainActivity : ComponentActivity() {
  * Compose recomposes whenever state changes; each recomposition rebuilds the UI tree.
  * We use mutableStateOf() + remember() to persist state across recompositions.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmVoiceApp() {
     val context = LocalContext.current

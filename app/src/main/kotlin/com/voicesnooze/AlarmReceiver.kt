@@ -42,8 +42,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val alarmIntent = Intent(context, AlarmRingActivity::class.java).apply {
                 // Tell AlarmRingActivity to release the WakeLock when it's ready
                 putExtra(EXTRA_WAKELOCK_TAG, "voicesnooze:alarm")
-                flags = Intent.FLAG_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_NO_USER_ACTION or
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
             context.startActivity(alarmIntent)
