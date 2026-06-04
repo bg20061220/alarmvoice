@@ -56,13 +56,21 @@ object AlarmScheduler {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Schedule the alarm
-        // The AlarmManager will fire the PendingIntent at the exact time, even if the app is closed/Doze is active
-        context.alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, // RTC_WAKEUP: wake the device up at the specified time
-            calendar.timeInMillis,
-            pendingIntent
-        )
+        // Try to schedule exactly; fall back to best-effort if permission denied
+        try {
+            context.alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        } catch (e: SecurityException) {
+            // Permission denied on Android 12+; use best-effort instead
+            context.alarmManager.setAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
     }
 
     /**

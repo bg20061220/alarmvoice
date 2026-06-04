@@ -1,12 +1,7 @@
 package com.voicesnooze
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,18 +64,6 @@ fun AlarmVoiceApp() {
     val minuteState = remember { mutableStateOf("30") }
     val alarmStatusState = remember { mutableStateOf("No alarm set") }
 
-    // Permission launcher: asks the user for SCHEDULE_EXACT_ALARM (Android 12+)
-    // rememberLauncherForActivityResult: remembers the launcher across recompositions
-    // so we don't re-register each time the composable rebuilds
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        alarmStatusState.value = if (granted) {
-            "Permission granted. Set alarm to proceed."
-        } else {
-            "Exact alarm permission denied. Alarm may be inaccurate."
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -135,20 +118,7 @@ fun AlarmVoiceApp() {
                     val validHour = hour.coerceIn(0, 23)
                     val validMinute = minute.coerceIn(0, 59)
 
-                    // Check permission before scheduling (Android 12+ requires SCHEDULE_EXACT_ALARM)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.SCHEDULE_EXACT_ALARM
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            // Permission not granted; request it
-                            permissionLauncher.launch(Manifest.permission.SCHEDULE_EXACT_ALARM)
-                            return@Button
-                        }
-                    }
-
-                    // Permission granted (or Android < 12); schedule the alarm
+                    // Schedule the alarm (AlarmScheduler handles permission gracefully)
                     AlarmScheduler.scheduleAlarm(context, validHour, validMinute)
                     alarmStatusState.value = "Alarm set for $validHour:${String.format("%02d", validMinute)}"
                 },
